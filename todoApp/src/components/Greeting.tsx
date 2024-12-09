@@ -2,13 +2,18 @@ import React from 'react';
 
 // definition de l'interface pour les props
 interface GreetingProps {
-  name: string;
+  isLoggedIn: boolean;
+  name?: string; // prop optionnel
 }
 
-const Greeting = ({ name }: GreetingProps): React.JSX.Element => {
+const Greeting = ({
+  isLoggedIn = true,
+  name,
+}: GreetingProps): React.JSX.Element => {
   return (
     <div>
-      <h1>Bonjour {name} !</h1>
+      {isLoggedIn ? <h1>Bonjour toi !</h1> : <h1>Bonjour invite !</h1>}
+      {isLoggedIn && name && <h2>{name}</h2>}
     </div>
   );
 };
