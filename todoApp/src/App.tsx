@@ -1,25 +1,28 @@
 import { useState } from 'react';
+import TodoList from './components/TodoList';
 
-import Greeting from './components/Greeting';
+// import Greeting from './components/Greeting';
 
 function App() {
-  const [count, setCount] = useState<number>(0);
+  // const [count, setCount] = useState<number>(0);
 
-  console.log('rendu');
+  console.log('rendu App');
 
-  const handleIncrement = (): void => {
-    setCount((c) => c + 1);
-    setCount((c) => c + 1);
-    setCount((c) => c + 1);
-  };
+  // const handleIncrement = (): void => {
+  //   setCount((c) => c + 1);
+  //   setCount((c) => c + 1);
+  //   setCount((c) => c + 1);
+  // };
 
   return (
     /* Utilisation du composant Greeting avec différentes valeurs pour la prop 'name' */
     <div>
-      <h2>Compteur: {count}</h2>
-      <button onClick={handleIncrement}>Incrementer</button>
+      <TodoList />
 
-      <Greeting isLoggedIn={true} name="Bob" />
+      {/* <h2>Compteur: {count}</h2>
+      <button onClick={handleIncrement}>Incrementer</button> */}
+
+      {/* <Greeting isLoggedIn={true} name="Bob" /> */}
     </div>
   );
 }
