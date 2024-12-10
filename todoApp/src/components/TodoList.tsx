@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   TodoItemInterface as TodoIt,
@@ -7,28 +7,30 @@ import {
 import TodoItem from './TodoItem.tsx';
 import AddTodo from './AddTodo.tsx';
 
-function TodoList() {
-  const [todos, setTodos] = useState<TodoIt[]>([
-    { id: 1, title: 'Apprendre React', completed: false },
-    { id: 2, title: 'Decouvrir typescript', completed: true },
-  ]);
+const todoList: TodoItemInterface[] = [
+  { id: 1, title: 'Apprendre React', completed: false },
+  { id: 2, title: 'Découvrir TypeScript', completed: true },
+];
 
-  function handleToggleTodo(id: number) {
+function TodoList() {
+  const [todos, setTodos] = useState<TodoIt[]>([]);
+
+  const handleToggleTodo = (id: number) => {
     setTodos((currentTodos) =>
       currentTodos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo,
       ),
     );
-  }
+  };
 
-  function handleAddTodo(title: string) {
+  const handleAddTodo = (title: string) => {
     const newTodo: TodoItemInterface = {
       id: Date.now(),
       title,
       completed: false,
     };
     setTodos((prevTodos) => [...prevTodos, newTodo]);
-  }
+  };
 
   const handleDeleteTodo = (id: number) => {
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
@@ -36,10 +38,23 @@ function TodoList() {
 
   useEffect(() => {
     const storedTodos = localStorage.getItem('todos');
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
+    if (storedTodos && storedTodos != '[]') {
+      try {
+        const parsedTodos: TodoItemInterface[] = JSON.parse(storedTodos);
+        setTodos(parsedTodos);
+      } catch (e) {
+        console.error(
+          'Erreur lors du parsing des todos depuis le local storage.',
+          e,
+        );
+        // Définir les todos par défaut en cas d'erreur de parsing
+        setTodos(todoList);
+      }
+    } else {
+      // Définir les todos par défaut si aucun todo n'est trouvé dans le localStorage
+      setTodos(todoList);
     }
-  }, []); // Tableau de dependances vide : cet effet s'execute une seule fois au montage du composant
+  }, []); // Exécute cet effet une seule fois au montage du composant
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));

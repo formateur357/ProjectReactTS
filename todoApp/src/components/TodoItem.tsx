@@ -9,14 +9,17 @@ interface TodoItemProps {
 function TodoItem({ todo, onToggleTodo, onDeleteTodo }: TodoItemProps) {
   return (
     <li>
+      <input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={() => onToggleTodo(todo.id)}
+        aria-label="Marquer cette tâche comme complétée ou non"
+      />
       <span
         style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
       >
         {todo.title}
       </span>
-      <button onClick={() => onToggleTodo(todo.id)}>
-        {todo.completed ? '⟲' : '✔'}
-      </button>
       <button onClick={() => onDeleteTodo(todo.id)}>Delete</button>
     </li>
   );
