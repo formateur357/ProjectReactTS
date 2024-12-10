@@ -1,5 +1,6 @@
 import { FormEvent, useState, ChangeEvent } from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
+import { Link } from 'react-router-dom';
 
 interface TodoItemProps {
   todo: TodoItemInterface;
@@ -46,11 +47,13 @@ function TodoItem({
           />
         </form>
       ) : (
-        <span
-          style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
-        >
-          {todo.title}
-        </span>
+        <Link to={`/todos/${todo.id}`}>
+          <span
+            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+          >
+            {todo.title}
+          </span>
+        </Link>
       )}
       {/* Bouton Éditer ou Enregistrer */}
       {isEditing ? (
