@@ -2,9 +2,11 @@ import { TodoItemInterface } from '../models/TodoItem.model';
 
 interface TodoItemProps {
   todo: TodoItemInterface;
+  onToggleTodo: (id: number) => void;
+  onDeleteTodo: (id: number) => void;
 }
 
-function TodoItem({ todo }: TodoItemProps) {
+function TodoItem({ todo, onToggleTodo, onDeleteTodo }: TodoItemProps) {
   return (
     <li>
       <span
@@ -12,6 +14,10 @@ function TodoItem({ todo }: TodoItemProps) {
       >
         {todo.title}
       </span>
+      <button onClick={() => onToggleTodo(todo.id)}>
+        {todo.completed ? '⟲' : '✔'}
+      </button>
+      <button onClick={() => onDeleteTodo(todo.id)}>Delete</button>
     </li>
   );
 }

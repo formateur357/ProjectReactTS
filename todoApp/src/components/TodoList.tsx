@@ -1,14 +1,38 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
-import { TodoItemInterface as TodoIt } from '../models/TodoItem.model.tsx';
+import {
+  TodoItemInterface as TodoIt,
+  TodoItemInterface,
+} from '../models/TodoItem.model.tsx';
 import TodoItem from './TodoItem.tsx';
-import TextInput from './TextInput.tsx';
+import AddTodo from './AddTodo.tsx';
 
 function TodoList() {
   const [todos, setTodos] = useState<TodoIt[]>([
     { id: 1, title: 'Apprendre React', completed: false },
     { id: 2, title: 'Decouvrir typescript', completed: true },
   ]);
+
+  function handleToggleTodo(id: number) {
+    setTodos((currentTodos) =>
+      currentTodos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  }
+
+  function handleAddTodo(title: string) {
+    const newTodo: TodoItemInterface = {
+      id: Date.now(),
+      title,
+      completed: false,
+    };
+    setTodos((prevTodos) => [...prevTodos, newTodo]);
+  }
+
+  const handleDeleteTodo = (id: number) => {
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  };
 
   useEffect(() => {
     const storedTodos = localStorage.getItem('todos');
@@ -23,10 +47,15 @@ function TodoList() {
 
   return (
     <div>
-      <TextInput />
+      <AddTodo onAdd={handleAddTodo} />
       <ul>
         {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onToggleTodo={handleToggleTodo}
+            onDeleteTodo={handleDeleteTodo}
+          />
         ))}
       </ul>
     </div>

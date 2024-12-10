@@ -1,8 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 
-interface TextInputProps {}
+interface AddTodoProps {
+  onAdd: (title: string) => void;
+}
 
-function TextInput() {
+function AddTodo({ onAdd }: AddTodoProps) {
   const [inputValue, setInputValue] = useState<string>('');
 
   // Declaration de l'etat pour les erreurs
@@ -27,6 +29,7 @@ function TextInput() {
     } else {
       alert(`Vous avez saisi : ${inputValue}`);
       // reinitialiser l'input apres soumission
+      onAdd(inputValue);
       setInputValue('');
     }
   };
@@ -52,4 +55,4 @@ function TextInput() {
   );
 }
 
-export default TextInput;
+export default AddTodo;
