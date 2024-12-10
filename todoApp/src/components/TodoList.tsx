@@ -1,21 +1,15 @@
 import TodoItem from './TodoItem.tsx';
 import AddTodo from './AddTodo.tsx';
-import useTodos from '../Hooks/useTodos.ts';
+import { useTodoState } from '../Context/TodoStateContext.tsx';
+import { useTodoDispatch } from '../Context/TodoDispatchContext.tsx';
 
 function TodoList() {
-  const {
-    filteredTodos,
-    addTodo,
-    deleteTodo,
-    toggleTodo,
-    editTodo,
-    filter,
-    setFilter,
-  } = useTodos();
+  const { filteredTodos, filter } = useTodoState();
+  const { setFilter } = useTodoDispatch();
 
   return (
     <div>
-      <AddTodo onAdd={addTodo} />
+      <AddTodo />
       {/* Section des filtres */}
       <div style={{ marginBottom: '1rem' }}>
         <button
@@ -47,13 +41,7 @@ function TodoList() {
       </div>
       <ul>
         {filteredTodos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            onToggleTodo={toggleTodo}
-            onDeleteTodo={deleteTodo}
-            onEditTodo={editTodo}
-          />
+          <TodoItem key={todo.id} todo={todo} />
         ))}
       </ul>
     </div>

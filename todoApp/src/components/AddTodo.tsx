@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { useTodoDispatch } from '../Context/TodoDispatchContext';
 
-interface AddTodoProps {
-  onAdd: (title: string) => void;
-}
+interface AddTodoProps {}
 
-function AddTodo({ onAdd }: AddTodoProps) {
+function AddTodo() {
+  const { addTodo } = useTodoDispatch();
   const [inputValue, setInputValue] = useState<string>('');
 
   // Declaration de l'etat pour les erreurs
@@ -29,7 +29,7 @@ function AddTodo({ onAdd }: AddTodoProps) {
     } else {
       alert(`Vous avez saisi : ${inputValue}`);
       // reinitialiser l'input apres soumission
-      onAdd(inputValue);
+      addTodo(inputValue);
       setInputValue('');
     }
   };

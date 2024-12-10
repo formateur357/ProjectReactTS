@@ -1,28 +1,31 @@
 import { FormEvent, useState, ChangeEvent } from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
 import { Link } from 'react-router-dom';
+import { useTodoDispatch } from '../Context/TodoDispatchContext';
 
 interface TodoItemProps {
   todo: TodoItemInterface;
-  onToggleTodo: (id: number) => void;
-  onDeleteTodo: (id: number) => void;
-  onEditTodo: (id: number, title: string) => void;
 }
 
-function TodoItem({
-  todo,
-  onToggleTodo,
-  onDeleteTodo,
-  onEditTodo,
-}: TodoItemProps) {
+function TodoItem({ todo }: TodoItemProps) {
+  const { toggleTodo, deleteTodo, editTodo } = useTodoDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
+
+  const handleDeleteTodo = () => {
+    const confirmDelete = window.confirm(
+      `Voulez-vous vraiment supprimer "${todo.title}" ?`,
+    );
+    if (confirmDelete) {
+      deleteTodo(todo.id);
+    }
+  };
 
   const handleEditSubmit = (event: FormEvent) => {
     event.preventDefault();
     const trimmedTitle = editTitle.trim();
     if (trimmedTitle) {
-      onEditTodo(todo.id, trimmedTitle);
+      editTodo(todo.id, trimmedTitle);
       setIsEditing(false);
     }
   };
@@ -32,7 +35,7 @@ function TodoItem({
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => onToggleTodo(todo.id)}
+        onChange={() => toggleTodo(todo.id)}
         aria-label="Marquer cette tâche comme complétée ou non"
       />
       {isEditing ? (
@@ -73,7 +76,7 @@ function TodoItem({
         </button>
       )}
 
-      <button onClick={() => onDeleteTodo(todo.id)}>Delete</button>
+      <button onClick={() => handleDeleteTodo()}>Delete</button>
     </li>
   );
 }

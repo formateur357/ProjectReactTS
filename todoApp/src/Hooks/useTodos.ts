@@ -1,7 +1,89 @@
-// src/hooks/useTodos.ts
+// src/hooks/useTodos.tsx
 
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
+
+// Types définis précédemment
+type FilterType = 'all' | 'completed' | 'incomplete';
+
+interface State {
+  todos: TodoItemInterface[];
+  filter: FilterType;
+}
+
+type Action =
+  | { type: 'INITIALIZE'; payload: TodoItemInterface[] }
+  | { type: 'ADD_TODO'; payload: string }
+  | { type: 'TOGGLE_TODO'; payload: number }
+  | { type: 'DELETE_TODO'; payload: number }
+  | { type: 'SET_FILTER'; payload: FilterType }
+  | { type: 'EDIT_TODO'; payload: { id: number; title: string } }
+  | { type: 'RESET_TODOS'; payload: TodoItemInterface[] };
+
+// Reducer défini précédemment
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'INITIALIZE':
+      return { ...state, todos: action.payload };
+
+    case 'ADD_TODO':
+      if (action.payload.trim() === '') return state;
+
+      const newTodo: TodoItemInterface = {
+        id: Date.now(),
+        title: action.payload.trim(),
+        completed: false,
+      };
+      return { ...state, todos: [...state.todos, newTodo] };
+
+    case 'TOGGLE_TODO':
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo.id === action.payload
+            ? { ...todo, completed: !todo.completed }
+            : todo,
+        ),
+      };
+
+    case 'DELETE_TODO':
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo.id !== action.payload),
+      };
+
+    case 'EDIT_TODO':
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo.id === action.payload.id
+            ? { ...todo, title: action.payload.title }
+            : todo,
+        ),
+      };
+
+    case 'SET_FILTER':
+      return {
+        ...state,
+        filter: action.payload,
+      };
+
+    case 'RESET_TODOS':
+      return {
+        ...state,
+        todos: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+// Définir les todos par défaut
+const defaultTodos: TodoItemInterface[] = [
+  { id: 1, title: 'Apprendre React', completed: false },
+  { id: 2, title: 'Découvrir TypeScript', completed: true },
+];
 
 // Définir le type de retour du hook
 interface UseTodosReturn {
@@ -13,86 +95,70 @@ interface UseTodosReturn {
   toggleTodo: (id: number) => void;
   editTodo: (id: number, newTitle: string) => void;
   setFilter: (filter: FilterType) => void;
+  resetTodos: () => void;
 }
 
-type FilterType = 'all' | 'completed' | 'incomplete';
+// Hook personnalisé pour gérer les tâches et les filtres
+const useTodos = (): UseTodosReturn => {
+  const initialState: State = {
+    todos: [],
+    filter: 'all',
+  };
 
-const todoList: TodoItemInterface[] = [
-  { id: 1, title: 'Apprendre React', completed: false },
-  { id: 2, title: 'Découvrir TypeScript', completed: true },
-];
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { todos, filter } = state;
 
-// Hook personnalisé pour gérer les tâches
-function useTodos(): UseTodosReturn {
-  const [todos, setTodos] = useState<TodoItemInterface[]>([]);
-  const [filter, setFilter] = useState<FilterType>('all');
-
+  // Initialisation des todos depuis le localStorage
   useEffect(() => {
     const storedTodos = localStorage.getItem('todos');
-    if (storedTodos && storedTodos != '[]') {
+    if (storedTodos && storedTodos !== '[]') {
       try {
         const parsedTodos: TodoItemInterface[] = JSON.parse(storedTodos);
-        setTodos(parsedTodos);
+        dispatch({ type: 'INITIALIZE', payload: parsedTodos });
       } catch (e) {
         console.error(
           'Erreur lors du parsing des todos depuis le local storage.',
           e,
         );
         // Définir les todos par défaut en cas d'erreur de parsing
-        setTodos(todoList);
+        dispatch({ type: 'INITIALIZE', payload: defaultTodos });
       }
     } else {
       // Définir les todos par défaut si aucun todo n'est trouvé dans le localStorage
-      setTodos(todoList);
+      dispatch({ type: 'INITIALIZE', payload: defaultTodos });
     }
-  }, []); // Exécute cet effet une seule fois au montage du composant
+  }, []);
 
+  // Synchronisation des todos avec le localStorage
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]); //cet effet s'executee a chaque changement de 'todos'
+  }, [todos]);
 
-  // Fonction pour ajouter une nouvelle tâche
+  // Actions
   const addTodo = (title: string) => {
-    if (title.trim() === '') return;
-
-    const newTodo: TodoItemInterface = {
-      id: Date.now(),
-      title: title.trim(),
-      completed: false,
-    };
-
-    setTodos((prevTodos) => [...prevTodos, newTodo]);
+    if (title.trim()) dispatch({ type: 'ADD_TODO', payload: title });
   };
 
-  // Fonction pour supprimer une tâche
   const deleteTodo = (id: number) => {
-    const todoToDelete = todos.find((todo) => todo.id === id);
-    if (!todoToDelete) return;
+    dispatch({ type: 'DELETE_TODO', payload: id });
+  };
 
-    const confirmDelete = window.confirm(
-      `Voulez-vous vraiment supprimer "${todoToDelete.title}" ?`,
-    );
-    if (confirmDelete) {
-      setTodos((currentTodos) => currentTodos.filter((todo) => todo.id !== id));
+  const toggleTodo = (id: number) => {
+    dispatch({ type: 'TOGGLE_TODO', payload: id });
+  };
+
+  const editTodo = (id: number, newTitle: string) => {
+    if (newTitle.trim()) {
+      dispatch({ type: 'EDIT_TODO', payload: { id, title: newTitle } });
     }
   };
 
-  // Fonction pour basculer l'état 'completed' d'une tâche
-  const toggleTodo = (id: number) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+  const setFilter = (filter: FilterType) => {
+    dispatch({ type: 'SET_FILTER', payload: filter });
   };
 
-  // Fonction pour éditer le titre d'une tâche
-  const editTodo = (id: number, newTitle: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, title: newTitle } : todo,
-      ),
-    );
+  const resetTodos = () => {
+    dispatch({ type: 'RESET_TODOS', payload: defaultTodos });
   };
 
   // Fonction pour obtenir les tâches filtrées
@@ -119,7 +185,8 @@ function useTodos(): UseTodosReturn {
     toggleTodo,
     editTodo,
     setFilter,
+    resetTodos,
   };
-}
+};
 
 export default useTodos;
