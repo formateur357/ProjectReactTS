@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode } from "react";
 
 // Définition de l'interface pour les informations de l'utilisateur
 interface User {
@@ -23,7 +23,7 @@ interface UserProviderProps {
   children: ReactNode;
 }
 
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   // Fonction pour se connecter (login)

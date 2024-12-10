@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-const UserProfile: React.FC = () => {
+const UserProfile = () => {
   const context = useContext(UserContext);
 
   if (!context) {

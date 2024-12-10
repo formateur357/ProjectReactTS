@@ -1,8 +1,8 @@
 // src/components/LoginButton.tsx
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-const LoginButton: React.FC = () => {
+const LoginButton = () => {
   const context = useContext(UserContext);
 
   if (!context) {
