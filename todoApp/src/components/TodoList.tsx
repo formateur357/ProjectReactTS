@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { TodoItemInterface as TodoIt } from '../models/TodoITem.model.tsx';
+import { TodoItemInterface as TodoIt } from '../models/TodoItem.model.tsx';
 import TodoItem from './TodoItem.tsx';
 import TextInput from './TextInput.tsx';
 

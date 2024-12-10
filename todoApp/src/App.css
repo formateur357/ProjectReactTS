@@ -1,0 +1,40 @@
+/* Styles globaux */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Container principal */
+.grid-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Header, Main, Footer */
+  min-height: 100vh; /* Hauteur minimale pour remplir la fenêtre */
+}
+
+/* Header */
+header {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* Contenu principal */
+.main-content {
+  padding: 1rem;
+  background-color: #f9f9f9;
+  overflow: auto; /* Ajoute un défilement si le contenu est trop grand */
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}

@@ -1,9 +1,7 @@
+import { TodoItemInterface } from '../models/TodoItem.model';
+
 interface TodoItemProps {
-  todo: {
-    id: number;
-    title: string;
-    completed: boolean;
-  };
+  todo: TodoItemInterface;
 }
 
 function TodoItem({ todo }: TodoItemProps) {
