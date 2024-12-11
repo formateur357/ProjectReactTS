@@ -2,7 +2,7 @@
 
 import { useReducer, useEffect } from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
-import { heavyComputation } from '../utils/heavyComputation';
+// import { heavyComputation } from '../utils/heavyComputation';
 
 // Types définis précédemment
 type FilterType = 'all' | 'completed' | 'incomplete';
