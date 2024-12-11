@@ -1,6 +1,6 @@
 // src/components/TodoDetail.tsx
 
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import useTodos from '../Hooks/useTodos';
 import { ThemeContext } from '../Context/ThemeContext';
@@ -11,6 +11,10 @@ function TodoDetail() {
   const { todos } = useTodos();
   const { id } = useParams<{ id: string }>();
   const todo = id !== '' ? todos.find((t) => t.id === Number(id)) : undefined;
+  // const titleLengthMemoized = useMemo(
+  //   () => (todo ? todo?.title.length * 10 : 0),
+  //   [todo?.title],
+  // );
   const context = useContext(ThemeContext);
 
   // Vérification que le contexte est défini

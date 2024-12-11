@@ -9,6 +9,9 @@ import Footer from './components/Footer';
 import ThemeToggleButton from './components/ThemeToggleButton';
 import { ThemeContext } from './Context/ThemeContext';
 import './assets/styles/App.css';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
 
 function App() {
   console.log('rendu App');
@@ -57,6 +60,11 @@ function App() {
             </Link>
           </li>
           <li>
+            <Link to="/login" style={linkStyles}>
+              Connexion
+            </Link>
+          </li>
+          <li>
             <Link to="/todos" style={linkStyles}>
               Liste de Tâches
             </Link>
@@ -66,9 +74,39 @@ function App() {
       <main className="main-content" style={{ flex: 1, padding: '20px' }}>
         <ThemeToggleButton />
         <Routes>
-          <Route path="/" element={<TodoList />} />
-          <Route path="/todos" element={<TodoList />} />
-          <Route path="/todos/:id" element={<TodoDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <TodoList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/todos"
+            element={
+              <PrivateRoute>
+                <TodoList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/todos/:id"
+            element={
+              <PrivateRoute>
+                <TodoDetail />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

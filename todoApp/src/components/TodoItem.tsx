@@ -8,9 +8,10 @@ import { ThemeContext } from '../Context/ThemeContext';
 
 interface TodoItemProps {
   todo: TodoItemInterface;
+  onDelete: (id: number) => {};
 }
 
-function TodoItem({ todo }: TodoItemProps) {
+const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
   const { toggleTodo, deleteTodo, editTodo } = useTodoDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
@@ -136,6 +137,6 @@ function TodoItem({ todo }: TodoItemProps) {
       </button>
     </li>
   );
-}
+});
 
 export default TodoItem;
