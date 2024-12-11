@@ -1,6 +1,6 @@
 // src/components/TodoList.tsx
 
-import { useCallback, useContext } from 'react';
+import { useContext } from 'react';
 import TodoItem from './TodoItem';
 import AddTodo from './AddTodo';
 import { useTodoState } from '../Context/TodoStateContext';
@@ -18,7 +18,7 @@ function TodoList() {
   }
 
   // Mémoïsation de la fonction de suppression avec useCallback
-  const handleDelete = useCallback((id: number): void => {}, []);
+  // const handleDelete = useCallback((id: number): void => {}, []);
 
   const { theme } = context;
 
@@ -58,7 +58,7 @@ function TodoList() {
       </div>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {filteredTodos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} onDelete={handleDelete} />
+          <TodoItem key={todo.id} todo={todo} />
         ))}
       </ul>
     </div>

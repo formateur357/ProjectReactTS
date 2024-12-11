@@ -2,6 +2,7 @@
 
 import { useReducer, useEffect } from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
+import { heavyComputation } from '../utils/heavyComputation';
 
 // Types définis précédemment
 type FilterType = 'all' | 'completed' | 'incomplete';
@@ -26,7 +27,7 @@ const reducer = (state: State, action: Action): State => {
     case 'INITIALIZE':
       return { ...state, todos: action.payload };
 
-    case 'ADD_TODO':
+    case 'ADD_TODO': {
       if (action.payload.trim() === '') return state;
 
       const newTodo: TodoItemInterface = {
@@ -35,6 +36,7 @@ const reducer = (state: State, action: Action): State => {
         completed: false,
       };
       return { ...state, todos: [...state.todos, newTodo] };
+    }
 
     case 'TOGGLE_TODO':
       return {

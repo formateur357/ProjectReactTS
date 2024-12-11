@@ -6,7 +6,7 @@ import { ThemeProvider } from './Context/ThemeContext.tsx';
 import TodoProvider from './Context/TodoProvider';
 import App from './App.tsx';
 import AuthProvider from './Context/AuthProvider';
-import { ExampleComponent } from './components/Exemple.tsx';
+// import { TimerComponent } from './components/Exemple.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,8 +14,8 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <ThemeProvider>
           <TodoProvider>
-            {/* <App /> */}
-            <ExampleComponent></ExampleComponent>
+            <App />
+            {/* <TimerComponent></TimerComponent> */}
           </TodoProvider>
         </ThemeProvider>
       </BrowserRouter>

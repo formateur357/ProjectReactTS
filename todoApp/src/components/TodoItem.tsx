@@ -1,14 +1,24 @@
 // src/components/TodoItem.tsx
 
-import React, { useContext, FormEvent, ChangeEvent, useState } from 'react';
+import React, {
+  useContext,
+  FormEvent,
+  ChangeEvent,
+  useState,
+  useRef,
+  useEffect,
+  // useEffect,
+  // useRef,
+} from 'react';
 import { TodoItemInterface } from '../models/TodoItem.model';
 import { Link } from 'react-router-dom';
 import { useTodoDispatch } from '../Context/TodoDispatchContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { heavyComputation } from '../utils/heavyComputation';
 
 interface TodoItemProps {
   todo: TodoItemInterface;
-  onDelete: (id: number) => {};
+  // onDelete: (id: number) => {};
 }
 
 const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
@@ -16,6 +26,16 @@ const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
   const context = useContext(ThemeContext);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Compteur de re-rendus
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+
+  // Simuler une opération coûteuse
+  const computedValue = heavyComputation(1000);
+
+  // const itemRef = useRef<HTMLLIElement>(null);
 
   // Vérification que le contexte est défini
   if (!context) {
@@ -75,6 +95,12 @@ const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
     }
   };
 
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
+
   return (
     <li style={liStyles}>
       <input
@@ -87,6 +113,7 @@ const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
       {isEditing ? (
         <form onSubmit={handleEditSubmit} style={{ flexGrow: 1 }}>
           <input
+            ref={inputRef}
             type="text"
             value={editTitle}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -109,7 +136,8 @@ const TodoItem = React.memo(({ todo }: TodoItemProps): JSX.Element => {
           to={`/todos/${todo.id}`}
           style={{ textDecoration: 'none', flexGrow: 1 }}
         >
-          <span style={spanStyles}>{todo.title}</span>
+          <span style={spanStyles}>{todo.title}</span> (Computed:{' '}
+          {computedValue})
         </Link>
       )}
       {/* Bouton Éditer ou Enregistrer */}
